@@ -33,7 +33,7 @@ spectrum <- hmdb_predicted_msms_peak %>%
 
 ggplot(spectrum, aes(x = mz, y = peak)) +
   geom_point() +
-  facet_wrap(~ group)
+  facet_wrap(~ group, scales = "free_y")
 ```
 
 ### Number of rows
