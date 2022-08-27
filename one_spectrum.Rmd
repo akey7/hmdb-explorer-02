@@ -1,0 +1,42 @@
+---
+title: "One Spectrum"
+output: html_document
+date: "2022-08-27"
+---
+
+# One spectrum
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries
+
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
+## Read in the datasets
+
+```{r}
+hmdb_predicted_msms_peak <- read.csv("data/hmdb_predicted_msms_peak.csv.gz")
+```
+
+## Plot one spectrum
+
+### Make the plot
+
+```{r}
+spectrum <- hmdb_predicted_msms_peak %>%
+  filter(accession == "HMDB0000002")
+
+ggplot(spectrum, aes(x = mz, y = peak)) +
+  geom_point()
+```
+
+### Number of rows
+
+```{r}
+nrow(spectrum)
+```
