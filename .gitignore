@@ -41,8 +41,8 @@ vignettes/*.pdf
 # Rproj
 *.Rproj
 
-# data
-data/
+# ignore all subdirectories
+data
 
 # macOS junk
 .DS_Store

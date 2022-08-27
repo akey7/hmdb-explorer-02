@@ -10,7 +10,7 @@ date: "2022-08-27"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Libraries
+## Libraries and efault theme
 
 ```{r}
 library(ggplot2)
@@ -19,25 +19,53 @@ library(dplyr)
 
 ## Read in the datasets
 
+### Predicted spectra dataset
+
 ```{r}
-hmdb_predicted_msms_peak <- read.csv("data/hmdb_predicted_msms_peak.csv")
+hmdb_predicted_peak <- read.csv("data/hmdb_predicted_peak.csv.gz")
+```
+
+### Metadata dataset
+
+```{r}
+hmdb_metabolites <- read.csv("data/hmdb_metabolites.csv.gz")
 ```
 
 ## Plot one spectrum
 
-### Make the plot
+### Retrieve one accession with one method
 
 ```{r}
-spectrum <- hmdb_predicted_msms_peak %>%
-  filter(accession == "HMDB0000002")
+accession_filter <- "HMDB0000002"
+method_filter <- "msms"
 
-ggplot(spectrum, aes(x = mz, y = peak)) +
-  geom_point() +
-  facet_wrap(~ group, scales = "free_y")
+spectra <- hmdb_predicted_peak %>%
+  filter(accession == accession_filter, method == method_filter)
+
+metabolite_name <- spectra$name[1]
+
+nrow(spectra)
 ```
 
-### Number of rows
+### Find the metadata
+
+There is only one row of metadata per accession, so it doesn't need a join.
 
 ```{r}
-nrow(spectrum)
+spectra_metadata <- hmdb_metabolites %>%
+  filter(accession == accession_filter)
+
+metabolite_name <- spectra_metadata$name[1]
+```
+
+### Make the facetted plot
+
+```{r}
+ggplot(spectra, aes(x = mz, y = peak)) +
+  geom_point() +
+  facet_wrap(~ group, scales = "free_y") +
+  labs(
+    title = metabolite_name,
+    subtitle = paste("method:", method_filter, "accession:", accession_filter)
+  )
 ```
