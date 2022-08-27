@@ -1,0 +1,84 @@
+---
+title: "One Spectrum"
+output: html_document
+date: "2022-08-27"
+---
+
+# One spectrum
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Libraries and default theme
+
+```{r}
+library(ggplot2)
+library(dplyr)
+library(readr)
+theme_set(theme_minimal())
+```
+
+## Read in the datasets
+
+### Predicted spectra dataset
+
+```{r}
+hmdb_predicted_peak <- read_csv("data/hmdb_predicted_peak.csv.gz", show_col_types = TRUE)
+```
+
+### Metadata dataset
+
+```{r}
+hmdb_metabolites <- read_csv("data/hmdb_metabolites.csv.gz", show_col_types = TRUE)
+```
+
+## Plot one spectrum
+
+### Retrieve one accession with one method
+
+```{r}
+accession_filter <- "HMDB0000002"
+method_filter <- "msms"
+
+spectra <- hmdb_predicted_peak %>%
+  filter(accession == accession_filter, method == method_filter) %>%
+  group_by(group) %>%
+  mutate(peak_normalized = peak / max(peak) * 100) %>%
+  ungroup()
+
+nrow(spectra)
+```
+
+### Find the metadata
+
+There is only one row of metadata per accession, so it doesn't need a join.
+
+```{r}
+spectra_metadata <- hmdb_metabolites %>%
+  filter(accession == accession_filter)
+
+metabolite_name <- spectra_metadata$name[1]
+```
+
+### Make the plot
+
+Just make the first spectrum found.
+
+This appears to be from [https://hmdb.ca/spectra/ms_ms/20441](https://hmdb.ca/spectra/ms_ms/20441).
+
+```{r}
+first_spectrum_group <- spectra$group[1]
+
+spectra %>%
+  filter(group == first_spectrum_group) %>%
+  ggplot() +
+    geom_segment(aes(x = mz, xend = mz, y = 0, yend = peak_normalized), color = "red", size = 0.75) +
+    labs(
+      title = metabolite_name,
+      subtitle = paste("method:", method_filter, "accession:", accession_filter)
+    ) +
+    ylab("peak normalized to 100")
+```
+
+
