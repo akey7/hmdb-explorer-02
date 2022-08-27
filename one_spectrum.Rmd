@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(ggplot2)
 library(dplyr)
+library(readr)
 ```
 
 ## Read in the datasets
@@ -22,13 +23,13 @@ library(dplyr)
 ### Predicted spectra dataset
 
 ```{r}
-hmdb_predicted_peak <- read.csv("data/hmdb_predicted_peak.csv.gz")
+hmdb_predicted_peak <- read_csv("data/hmdb_predicted_peak.csv.gz", show_col_types = TRUE)
 ```
 
 ### Metadata dataset
 
 ```{r}
-hmdb_metabolites <- read.csv("data/hmdb_metabolites.csv.gz")
+hmdb_metabolites <- read_csv("data/hmdb_metabolites.csv.gz", show_col_types = TRUE)
 ```
 
 ## Plot one spectrum
@@ -41,8 +42,6 @@ method_filter <- "msms"
 
 spectra <- hmdb_predicted_peak %>%
   filter(accession == accession_filter, method == method_filter)
-
-metabolite_name <- spectra$name[1]
 
 nrow(spectra)
 ```
@@ -67,12 +66,16 @@ first_spectrum_group <- spectra$group[1]
 
 spectra %>%
   filter(group == first_spectrum_group) %>%
-  ggplot(aes(x = mz, y = peak)) +
-    geom_point() +
-    facet_wrap(~ group, scales = "free_y") +
+  ggplot() +
+    geom_point(aes(x = mz, y = peak)) +
+    facet_wrap(~ group, scales = "fixed") +
     labs(
       title = metabolite_name,
       subtitle = paste("method:", method_filter, "accession:", accession_filter)
     ) +
     theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+```
+
+```{r}
+str(spectra)
 ```
