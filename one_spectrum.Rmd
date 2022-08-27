@@ -78,8 +78,7 @@ spectra %>%
       title = metabolite_name,
       subtitle = paste("method:", method_filter, "accession:", accession_filter)
     ) +
-    ylab("peak normalized to 100") +
-    theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1), legend.position = "none")
+    ylab("peak normalized to 100")
 ```
 
 
