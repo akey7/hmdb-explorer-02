@@ -10,12 +10,13 @@ date: "2022-08-27"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Libraries and efault theme
+## Libraries and default theme
 
 ```{r}
 library(ggplot2)
 library(dplyr)
 library(readr)
+theme_set(theme_minimal())
 ```
 
 ## Read in the datasets
@@ -43,7 +44,8 @@ method_filter <- "msms"
 spectra <- hmdb_predicted_peak %>%
   filter(accession == accession_filter, method == method_filter) %>%
   group_by(group) %>%
-  mutate(peak_normalized = peak / max(peak) * 100)
+  mutate(peak_normalized = peak / max(peak) * 100) %>%
+  ungroup()
 
 nrow(spectra)
 ```
@@ -59,7 +61,7 @@ spectra_metadata <- hmdb_metabolites %>%
 metabolite_name <- spectra_metadata$name[1]
 ```
 
-### Make the facetted plot
+### Make the plot
 
 Just make the first spectrum found.
 
@@ -71,15 +73,13 @@ first_spectrum_group <- spectra$group[1]
 spectra %>%
   filter(group == first_spectrum_group) %>%
   ggplot() +
-    geom_point(aes(x = mz, y = peak_normalized)) +
-    facet_wrap(~ group, scales = "fixed") +
+    geom_segment(aes(x = mz, xend = mz, y = 0, yend = peak_normalized), color = "red", size = 0.75) +
     labs(
       title = metabolite_name,
       subtitle = paste("method:", method_filter, "accession:", accession_filter)
     ) +
-    theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
+    ylab("peak normalized to 100") +
+    theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1), legend.position = "none")
 ```
 
-```{r}
-str(spectra)
-```
+
