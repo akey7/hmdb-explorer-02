@@ -41,7 +41,9 @@ accession_filter <- "HMDB0000002"
 method_filter <- "msms"
 
 spectra <- hmdb_predicted_peak %>%
-  filter(accession == accession_filter, method == method_filter)
+  filter(accession == accession_filter, method == method_filter) %>%
+  group_by(group) %>%
+  mutate(peak_normalized = peak / max(peak) * 100)
 
 nrow(spectra)
 ```
@@ -69,7 +71,7 @@ first_spectrum_group <- spectra$group[1]
 spectra %>%
   filter(group == first_spectrum_group) %>%
   ggplot() +
-    geom_point(aes(x = mz, y = peak)) +
+    geom_point(aes(x = mz, y = peak_normalized)) +
     facet_wrap(~ group, scales = "fixed") +
     labs(
       title = metabolite_name,
