@@ -60,12 +60,19 @@ metabolite_name <- spectra_metadata$name[1]
 
 ### Make the facetted plot
 
+Just make the first spectrum found.
+
 ```{r}
-ggplot(spectra, aes(x = mz, y = peak)) +
-  geom_point() +
-  facet_wrap(~ group, scales = "free_y") +
-  labs(
-    title = metabolite_name,
-    subtitle = paste("method:", method_filter, "accession:", accession_filter)
-  )
+first_spectrum_group <- spectra$group[1]
+
+spectra %>%
+  filter(group == first_spectrum_group) %>%
+  ggplot(aes(x = mz, y = peak)) +
+    geom_point() +
+    facet_wrap(~ group, scales = "free_y") +
+    labs(
+      title = metabolite_name,
+      subtitle = paste("method:", method_filter, "accession:", accession_filter)
+    ) +
+    theme(axis.text.x = element_text(angle=45, vjust=1, hjust=1))
 ```
