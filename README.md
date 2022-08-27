@@ -3,7 +3,7 @@ Exploring data preprocessed by akey7/hmdb-explorer-01
 
 Since the datasets are large, they are not committed with this repo. They are expected to be in `data/` directory.
 
-Uses data preprocessed from the HMDB at:
+Uses data preprocessed from the HMDB with at [https://hmdb.ca](https://hmdb.ca) and with the following citations:
 
 > Wishart DS, Tzur D, Knox C, et al., HMDB: the Human Metabolome Database. Nucleic Acids Res. 2007 Jan;35(Database issue):D521-6. 17202168
 
