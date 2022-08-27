@@ -20,7 +20,7 @@ library(dplyr)
 ## Read in the datasets
 
 ```{r}
-hmdb_predicted_msms_peak <- read.csv("data/hmdb_predicted_msms_peak.csv.gz")
+hmdb_predicted_msms_peak <- read.csv("data/hmdb_predicted_msms_peak.csv")
 ```
 
 ## Plot one spectrum
@@ -32,7 +32,8 @@ spectrum <- hmdb_predicted_msms_peak %>%
   filter(accession == "HMDB0000002")
 
 ggplot(spectrum, aes(x = mz, y = peak)) +
-  geom_point()
+  geom_point() +
+  facet_wrap(~ group)
 ```
 
 ### Number of rows
